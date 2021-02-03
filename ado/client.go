@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -44,4 +45,12 @@ func (c *Client) doRequest(method string, path string, body io.Reader) (*http.Re
 		req.Header.Add(k, v)
 	}
 	return client.Do(req)
+}
+
+func (c *Client) doRequestForBody(method string, path string, body io.Reader) ([]byte, error) {
+	resp, err := c.doRequest(method, path, body)
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(resp.Body)
 }
