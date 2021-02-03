@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+type ReleaseBody struct {
+	Count int       `json:"count"`
+	Value []Release `json:"value"`
+}
+
 type ReleaseDefinition struct {
 	Id         int       `json:"id"`
 	Name       string    `json:"name"`
@@ -55,9 +60,9 @@ func (c Client) GetReleasesForProject(pn string) ([]Release, error) {
 	if err != nil {
 		return nil, err
 	}
-	list := &[]Release{}
+	list := &ReleaseBody{}
 	je := json.Unmarshal(resp, list)
-	return *list, je
+	return list.Value, je
 }
 
 func (c Client) GetReleaseDetails(pn string, id int) (*ReleaseDetails, error) {
