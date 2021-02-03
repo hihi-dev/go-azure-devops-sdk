@@ -13,12 +13,24 @@ type Client struct {
 	headers map[string]string
 }
 
-func CreateClient(username, password, baseUrl string) *Client {
-	return &Client{base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", username, password))), baseUrl, map[string]string{}}
+func CreateClient(username, pat, org string) *Client {
+	return CreateSelfHostedClient(username, pat, createBaseUrl(org))
 }
 
-func CreateClientWithToken(authToken, baseUrl string) *Client {
-	return &Client{authToken, baseUrl, map[string]string{}}
+func CreateClientWithEncodedToken(authToken, org string) *Client {
+	return CreateSelfHostedClientWithEncodedToken(authToken, createBaseUrl(org))
+}
+
+func CreateSelfHostedClient(username, pat, url string) *Client {
+	return &Client{base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", username, pat))), url, map[string]string{}}
+}
+
+func CreateSelfHostedClientWithEncodedToken(authToken, url string) *Client {
+	return &Client{authToken, url, map[string]string{}}
+}
+
+func createBaseUrl(org string) string {
+	return "https://vsrm.dev.azure.com/"+org
 }
 
 // Perform an action on the API against this path
