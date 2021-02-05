@@ -3,71 +3,50 @@ package ado
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 )
 
-type Repository struct {
-	Id            string  `json:"id"`
-	Url           string  `json:"url"`
-	Name          string  `json:"name"`
-	Size          int64   `json:"size"`
-	SshUrl        string  `json:"sshUrl"`
-	WebUrl        string  `json:"webUrl"`
-	Project       Project `json:"project"`
-	RemoteUrl     string  `json:"remoteUrl"`
-	DefaultBranch string  `json:"defaultBranch"`
+type commitsResponseBody struct {
+	Count int      `json:"count"`
+	Value []Commit `json:"value"`
 }
 
-type Project struct {
-	Id             string    `json:"id"`
-	Url            string    `json:"url"`
-	Name           string    `json:"name"`
-	State          string    `json:"state"`
-	Revision       int       `json:"revision"`
-	Visibility     string    `json:"visibility"`
-	Description    string    `json:"description"`
-	LastUpdateTime time.Time `json:"lastUpdateTime"`
+type Commit struct {
+	Id        string `json:"commitId"`
+	Author    Author `json:"author"`
+	Committer Author `json:"committer"`
+	Comment   string `json:"comment"`
+	Url       string `json:"url"`
+	RemoteUrl string `json:"remoteUrl"`
 }
 
-type repoListBody struct {
-	Value []Repository `json:"value"`
+type Author struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Date  string `json:"date"`
 }
 
-func (c *Client) ListRepositoriesInProject(p string) ([]Repository, error) {
-	path := fmt.Sprintf("/%s/_apis/git/repositories", p)
-	return c.fetchRepoList(path)
+type ChangeCount struct {
+	Add    int `json:"add"`
+	Edit   int `json:"edit"`
+	Delete int `json:"delete"`
 }
 
-func (c *Client) ListAllRepositories() ([]Repository, error) {
-	return c.fetchRepoList("/_apis/git/repositories")
-}
-
-func (c *Client) GetRepositoryById(id string) (*Repository, error) {
+func (c *Client) GetCommitsForRepositoryById(id string) ([]Commit, error) {
 	path := fmt.Sprintf("/_apis/git/repositories/%s", id)
-	return c.fetchGitRepo(path)
+	return c.fetchCommits(path)
 }
 
-func (c *Client) GetRepositoryByName(project, repo string) (*Repository, error) {
-	path := fmt.Sprintf("/%s/_apis/git/repositories/%s", project, repo)
-	return c.fetchGitRepo(path)
+func (c *Client) GetCommitsForRepositoryByName(project, repo string) ([]Commit, error) {
+	path := fmt.Sprintf("/%s/_apis/git/repositories/%s/commits", project, repo)
+	return c.fetchCommits(path)
 }
 
-func (c *Client) fetchGitRepo(path string) (*Repository, error) {
+func (c *Client) fetchCommits(path string) ([]Commit, error) {
 	resp, err := c.doRequestForBody(BaseUrl, "GET", path, nil)
 	if err != nil {
 		return nil, err
 	}
-	r := &Repository{}
-	je := json.Unmarshal(resp, r)
-	return r, je
-}
-
-func (c *Client) fetchRepoList(path string) ([]Repository, error) {
-	resp, err := c.doRequestForBody(BaseUrl, "GET", path, nil)
-	if err != nil {
-		return nil, err
-	}
-	r := &repoListBody{}
+	r := &commitsResponseBody{}
 	je := json.Unmarshal(resp, r)
 	return r.Value, je
 }
