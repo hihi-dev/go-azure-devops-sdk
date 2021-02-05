@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type ReleaseBody struct {
+type releaseBody struct {
 	Count int       `json:"count"`
 	Value []Release `json:"value"`
 }
@@ -50,24 +50,24 @@ type DefinitionReference struct {
 }
 
 type Reference struct {
-	Id         string       `json:"id"`
-	Name       string    `json:"name"`
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 
 func (c Client) GetReleasesForProject(pn string) ([]Release, error) {
 	path := fmt.Sprintf("/%s/_apis/release/releases", pn)
-	resp, err := c.doRequestForBody("GET", path, nil)
+	resp, err := c.doRequestForBody(BaseUrlLegacy, "GET", path, nil)
 	if err != nil {
 		return nil, err
 	}
-	list := &ReleaseBody{}
+	list := &releaseBody{}
 	je := json.Unmarshal(resp, list)
 	return list.Value, je
 }
 
 func (c Client) GetReleaseDetails(pn string, id int) (*ReleaseDetails, error) {
 	path := fmt.Sprintf("/%s/_apis/release/releases/%d", pn, id)
-	resp, err := c.doRequestForBody("GET", path, nil)
+	resp, err := c.doRequestForBody(BaseUrlLegacy, "GET", path, nil)
 	if err != nil {
 		return nil, err
 	}
