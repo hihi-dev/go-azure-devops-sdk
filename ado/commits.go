@@ -32,12 +32,22 @@ type ChangeCount struct {
 }
 
 func (c *Client) GetCommitsForRepositoryById(id string) ([]Commit, error) {
-	path := fmt.Sprintf("/_apis/git/repositories/%s", id)
+	path := fmt.Sprintf("/_apis/git/repositories/%s/commits", id)
 	return c.fetchCommits(path)
 }
 
 func (c *Client) GetCommitsForRepositoryByName(project, repo string) ([]Commit, error) {
 	path := fmt.Sprintf("/%s/_apis/git/repositories/%s/commits", project, repo)
+	return c.fetchCommits(path)
+}
+
+func (c *Client) GetDiffBetweenVersionsById(id, source, target string) ([]Commit, error) {
+	path := fmt.Sprintf("/_apis/git/repositories/%s/commits?searchCriteria.compareVersion.version=%s&searchCriteria.itemVersion.version=%s", id, source, target)
+	return c.fetchCommits(path)
+}
+
+func (c *Client) GetDiffBetweenVersionsByName(project, repo, source, target string) ([]Commit, error) {
+	path := fmt.Sprintf("/%s/_apis/git/repositories/%s/commits?searchCriteria.compareVersion.version=%s&searchCriteria.itemVersion.version=%s", project, repo, source, target)
 	return c.fetchCommits(path)
 }
 
