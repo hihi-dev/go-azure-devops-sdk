@@ -26,10 +26,6 @@ func CreateClientWithEncodedToken(authToken, org string) *Client {
 	return &Client{authToken, org, map[string]string{}}
 }
 
-func createBaseUrl(org string) string {
-	return "https://vsrm.dev.azure.com/"+org
-}
-
 // Perform an action on the API against this path
 func (c *Client) doRequest(baseUrl, method string, path string, body io.Reader) (*http.Response, error) {
 	c.headers["Accept"] = "application/json"
