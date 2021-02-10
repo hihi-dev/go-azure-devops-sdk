@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -31,6 +32,8 @@ func (c *Client) doRequest(baseUrl, method string, path string, body io.Reader) 
 	c.headers["Accept"] = "application/json"
 	c.headers["Authorization"] = "Basic " + c.auth
 	url := baseUrl + path
+	log.Println("Requesting from the following URL")
+	log.Println(url)
 	client := &http.Client{}
 	req, _ := http.NewRequest(method, url, body)
 	for k, v := range c.headers {

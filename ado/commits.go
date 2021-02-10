@@ -11,12 +11,13 @@ type commitsResponseBody struct {
 }
 
 type Commit struct {
-	Id        string `json:"commitId"`
-	Author    Author `json:"author"`
-	Committer Author `json:"committer"`
-	Comment   string `json:"comment"`
-	Url       string `json:"url"`
-	RemoteUrl string `json:"remoteUrl"`
+	Id        string      `json:"commitId"`
+	Author    Author      `json:"author"`
+	Committer Author      `json:"committer"`
+	Comment   string      `json:"comment"`
+	Url       string      `json:"url"`
+	RemoteUrl string      `json:"remoteUrl"`
+	Changes   ChangeCount `json:"changeCount"`
 }
 
 type Author struct {
@@ -26,9 +27,9 @@ type Author struct {
 }
 
 type ChangeCount struct {
-	Add    int `json:"add"`
-	Edit   int `json:"edit"`
-	Delete int `json:"delete"`
+	Add    int `json:"Add"`
+	Edit   int `json:"Edit"`
+	Delete int `json:"Delete"`
 }
 
 func (c *Client) GetCommitsForRepositoryById(id string) ([]Commit, error) {
