@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -16,8 +15,8 @@ type Client struct {
 }
 
 // Seems that the DevOps API doesn't have a constant BaseUrl, so this exists :(
-const BaseUrl = "https://dev.azure.com/"
-const BaseUrlLegacy = "https://vsrm.dev.azure.com/"
+const BaseUrl = "https://dev.azure.com"
+const BaseUrlLegacy = "https://vsrm.dev.azure.com"
 
 func CreateClient(username, pat, org string) *Client {
 	return &Client{base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", username, pat))), org, map[string]string{}}
@@ -31,9 +30,7 @@ func CreateClientWithEncodedToken(authToken, org string) *Client {
 func (c *Client) doRequest(baseUrl, method string, path string, body io.Reader) (*http.Response, error) {
 	c.headers["Accept"] = "application/json"
 	c.headers["Authorization"] = "Basic " + c.auth
-	url := baseUrl + path
-	log.Println("Requesting from the following URL")
-	log.Println(url)
+	url := fmt.Sprintf("%s/%s%s", baseUrl, c.org, path)
 	client := &http.Client{}
 	req, _ := http.NewRequest(method, url, body)
 	for k, v := range c.headers {
