@@ -11,13 +11,14 @@ type commitsResponseBody struct {
 }
 
 type Commit struct {
-	Id        string      `json:"commitId"`
-	Author    Author      `json:"author"`
-	Committer Author      `json:"committer"`
-	Comment   string      `json:"comment"`
-	Url       string      `json:"url"`
-	RemoteUrl string      `json:"remoteUrl"`
-	Changes   ChangeCount `json:"changeCount"`
+	Id               string      `json:"commitId"`
+	Author           Author      `json:"author"`
+	Committer        Author      `json:"committer"`
+	Comment          string      `json:"comment"`
+	Url              string      `json:"url"`
+	RemoteUrl        string      `json:"remoteUrl"`
+	Changes          ChangeCount `json:"changeCount"`
+	CommentTruncated bool        `json:"commentTruncated"`
 }
 
 type Author struct {
