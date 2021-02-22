@@ -45,8 +45,10 @@ type Artifact struct {
 }
 
 type DefinitionReference struct {
-	Branch  Reference `json:"branch"`
-	Version Reference `json:"version"`
+	Branch     Reference `json:"branch"`
+	Version    Reference `json:"version"`
+	Project    Reference `json:"project"`
+	Definition Reference `json:"definition"`
 }
 
 type Reference struct {
